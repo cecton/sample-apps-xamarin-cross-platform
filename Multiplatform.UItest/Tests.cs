@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System;
 using Xamarin.UITest;
 
 namespace Multiplatform.UItest
@@ -18,7 +19,21 @@ namespace Multiplatform.UItest
 		[SetUp]
 		public void BeforeEachTest()
 		{
-			app = AppInitializer.StartApp(platform);
+			if (platform == Platform.iOS)
+			{
+				string bundleId = Environment.GetEnvironmentVariable("IOS_SIMULATOR_UDID");
+				string deviceIdentifier = "com.bitrise.multiplatform";
+
+				app = ConfigureApp
+					.iOS
+					.InstalledApp(bundleId)
+					.DeviceIdentifier(deviceIdentifier)
+					.StartApp();
+			}
+			else
+			{
+				app = AppInitializer.StartApp(platform);
+			}
 		}
 
 		[Test]
